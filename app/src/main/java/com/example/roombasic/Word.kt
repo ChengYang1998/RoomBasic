@@ -21,16 +21,6 @@ data class Word(
     val word: String = "",
 
     @ColumnInfo("chinese_meaning")
-    val chineseMeaning: String = "",
+    val chineseMeaning: String = ""
 
-
-    )
-
-
-
-
-
-
-
-
-
+)

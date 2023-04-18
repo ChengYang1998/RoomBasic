@@ -1,16 +1,20 @@
 package com.example.roombasic
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.roombasic.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     // 在 Activity 或 Fragment 中声明一个 ViewBinding 变量
     private lateinit var binding: ActivityMainBinding
     private val viewModel by lazy { ViewModelProvider(this)[MainViewModel::class.java] }
+    private var myAdapter: MyAdapter = MyAdapter()
 
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -18,15 +22,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
         //观察LiveData
-        viewModel.getAllWordsLive().observe(this) { wordList ->
-            var text = ""
-            wordList?.forEach {
-                text += "${it?.id}:${it?.word}=${it?.chineseMeaning}\n"
+        viewModel.getAllWordsLive().observe(this) {
+            if (it != null) {
+                myAdapter.allWords = it.filterNotNull()
+                binding.recyclerView.adapter = myAdapter
             }
-            binding.textView.text = text
         }
 
 

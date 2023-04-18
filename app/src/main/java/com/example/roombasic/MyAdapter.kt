@@ -1,40 +1,49 @@
 package com.example.roombasic
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.roombasic.databinding.ItemCardBinding
+
 
 /**
  *    author : Chip
  *    time   : 2023/4/17
  *    desc   :
  */
-class MyAdapter(private val data: List<String>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class MyAdapter : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyAdapter.MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_normal, parent, false)
-        return MyViewHolder(view)
+    lateinit var allWords: List<Word>
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+        val binding = ItemCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return MyViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: MyAdapter.MyViewHolder, position: Int) {
-        val item = data[position]
-
-        holder.bind(item)
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        val item = allWords[position]
+        holder.bind(item, position)
+        holder.itemView.setOnClickListener {
+            Toast.makeText(holder.itemView.context, "click", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return allWords.size
     }
 
-    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val myTextView: TextView = itemView.findViewById(R.id.textView2)
-
+    class MyViewHolder(private val binding: ItemCardBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         // 绑定数据项
-        fun bind(item: String) {
-            myTextView.text = item
+        @SuppressLint("SetTextI18n")
+        fun bind(item: Word, position: Int) {
+            binding.textViewNumber.text = (position + 1).toString()
+            binding.textViewEnglish.text = item.word
+            binding.textViewChinese.text = item.chineseMeaning
         }
     }
 
